@@ -15,45 +15,50 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- Estilos CSS Mejorados (v9 - Correcciones finales modo claro y colores) ---
-NEW_PRIMARY_COLOR = "#00535E"
-LIGHT_BACKGROUND_COLOR = "#f0f2f5" # Un gris muy claro para el fondo general
-WHITE_BACKGROUND_COLOR = "#FFFFFF" # Blanco para elementos como inputs, tarjetas, etc.
-TEXT_COLOR_ON_LIGHT_BG = "#1a1a1a" # Negro/gris oscuro para texto principal
-SECONDARY_TEXT_COLOR = "#4f4f4f" # Gris medio para texto secundario o menos importante
-DEFAULT_TEXT_COLOR_INPUT_LABELS = "#495057" # Color para etiquetas de inputs
-BORDER_COLOR = "#ced4da" # Color de borde estándar
+# --- Definición de Colores y Estilos (v10) ---
+PRIMARY_COLOR = "#00535E" # Color principal solicitado por el usuario
+LIGHT_BACKGROUND_COLOR = "#f0f2f5"
+WHITE_BACKGROUND_COLOR = "#FFFFFF"
+TEXT_COLOR_DARK = "#1a1a1a" # Para títulos y texto principal
+TEXT_COLOR_MEDIUM = "#4f4f4f" # Para texto secundario
+TEXT_COLOR_LABELS = "#495057" # Para etiquetas de inputs
+BORDER_COLOR_STANDARD = "#ced4da"
 
 st.markdown(f"""
 <style>
     /* --- Forzar Tema Claro Global --- */
-    html, body, div[data-testid="stAppViewContainer"], div[data-testid="stReportViewContainer"], div.main, section[data-testid="stSidebar"] {{
+    html, body,
+    div[data-testid="stAppViewContainer"],
+    div[data-testid="stReportViewContainer"],
+    div.main,
+    section[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"],
+    section[data-testid="stSidebar"] {{
         background-color: {LIGHT_BACKGROUND_COLOR} !important;
-        color: {TEXT_COLOR_ON_LIGHT_BG} !important;
+        color: {TEXT_COLOR_DARK} !important;
     }}
+
     section[data-testid="stHeader"] {{
         background-color: {WHITE_BACKGROUND_COLOR} !important;
         border-bottom: 1px solid #e0e0e0;
     }}
-    section[data-testid="stHeader"] h1, section[data-testid="stHeader"] p, section[data-testid="stHeader"] .stToolbar {{ 
-        color: {TEXT_COLOR_ON_LIGHT_BG} !important;
+    section[data-testid="stHeader"] h1,
+    section[data-testid="stHeader"] p,
+    section[data-testid="stHeader"] .stToolbar,
+    section[data-testid="stHeader"] .stToolbar button svg {{
+        color: {TEXT_COLOR_DARK} !important;
+        fill: {TEXT_COLOR_DARK} !important; /* Para iconos SVG en el header */
     }}
 
     /* --- Textos Generales y Títulos --- */
-    body {{
-        font-family: 'Inter', sans-serif;
-    }}
     h1, h2, h3, h4, h5, h6 {{
-        color: {TEXT_COLOR_ON_LIGHT_BG} !important;
+        color: {TEXT_COLOR_DARK} !important;
         font-weight: 600;
     }}
     p, .stMarkdown p {{
-        color: {SECONDARY_TEXT_COLOR} !important;
-        line-height: 1.6;
+        color: {TEXT_COLOR_MEDIUM} !important;
     }}
     .stCaption {{
-        color: #666 !important;
-        font-style: italic;
+        color: {TEXT_COLOR_MEDIUM} !important; opacity: 0.8;
     }}
 
     /* --- Pestañas --- */
@@ -62,172 +67,243 @@ st.markdown(f"""
     }}
     .stTabs [data-baseweb="tab"] {{
         background-color: transparent !important;
-        color: #666 !important;
+        color: {TEXT_COLOR_MEDIUM} !important;
     }}
     .stTabs [data-baseweb="tab"]:hover {{
         background-color: #e9ecef !important;
-        color: #333 !important;
+        color: {TEXT_COLOR_DARK} !important;
     }}
     .stTabs [aria-selected="true"] {{
-        color: {NEW_PRIMARY_COLOR} !important;
-        border-bottom: 3px solid {NEW_PRIMARY_COLOR} !important;
+        color: {PRIMARY_COLOR} !important;
+        border-bottom: 3px solid {PRIMARY_COLOR} !important;
     }}
 
     /* --- Botones --- */
     .stButton>button, .stDownloadButton>button {{
-        background-color: {NEW_PRIMARY_COLOR} !important;
-        color: white !important;
+        background-color: {PRIMARY_COLOR} !important;
+        color: {WHITE_BACKGROUND_COLOR} !important;
         border: none !important;
+        border-radius: 6px;
     }}
     .stButton>button:hover, .stDownloadButton>button:hover {{
-        background-color: color-mix(in srgb, {NEW_PRIMARY_COLOR} 80%, black) !important;
+        background-color: color-mix(in srgb, {PRIMARY_COLOR} 80%, black) !important;
     }}
 
     /* --- Tarjetas y Cajas de Información --- */
     .metric-card, .info-box, .warning-box, .success-box, .pessimistic-box {{
         background-color: {WHITE_BACKGROUND_COLOR} !important;
-        color: {TEXT_COLOR_ON_LIGHT_BG} !important;
+        color: {TEXT_COLOR_DARK} !important;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+        border-left: 5px solid;
+    }}
+    .metric-card {{
+        border-left-color: {PRIMARY_COLOR};
     }}
     .metric-card h2 {{
-        color: {NEW_PRIMARY_COLOR} !important;
+        color: {PRIMARY_COLOR} !important;
     }}
-    .info-box {{
-        border-left-color: #17a2b8; background-color: #e8f7f9 !important;}}
-    .warning-box {{
-        border-left-color: #ffc107; background-color: #fff9e6 !important; }}
-    .pessimistic-box {{
-        border-left-color: #fd7e14; background-color: #fff3e0 !important; }}
-    .success-box {{
-        border-left-color: #28a745; background-color: #eaf6ec !important; }}
+    .info-box {{ border-left-color: #17a2b8; background-color: #e8f7f9 !important; }}
+    .warning-box {{ border-left-color: #ffc107; background-color: #fff9e6 !important; }}
+    .pessimistic-box {{ border-left-color: #fd7e14; background-color: #fff3e0 !important; }}
+    .success-box {{ border-left-color: #28a745; background-color: #eaf6ec !important; }}
     .metric-card h3, .info-box h4, .warning-box h4, .success-box h4, .pessimistic-box h4 {{
-        color: {TEXT_COLOR_ON_LIGHT_BG} !important;
+        color: {TEXT_COLOR_DARK} !important;
+        margin-top: 0;
     }}
 
-    /* --- Entradas (Inputs) --- */
+    /* --- Entradas (Inputs): TextInput, Selectbox, MultiSelect --- */
     .stTextInput>div>div>input,
     .stSelectbox>div>div,
     .stMultiSelect>div>div[data-baseweb="select"] {{
         background-color: {WHITE_BACKGROUND_COLOR} !important;
-        color: {TEXT_COLOR_ON_LIGHT_BG} !important;
-        border: 1px solid {BORDER_COLOR} !important;
+        color: {TEXT_COLOR_DARK} !important;
+        border: 1px solid {BORDER_COLOR_STANDARD} !important;
+        border-radius: 6px;
     }}
-    /* Placeholder text color for inputs */
     .stTextInput input::placeholder {{
         color: #888 !important;
     }}
-    /* Dropdown list items for st.selectbox and st.multiselect */
+    /* Dropdown list items */
     div[data-baseweb="popover"] ul[role="listbox"] li[role="option"] > div {{
         background-color: {WHITE_BACKGROUND_COLOR} !important;
-        color: {TEXT_COLOR_ON_LIGHT_BG} !important;
+        color: {TEXT_COLOR_DARK} !important;
     }}
     div[data-baseweb="popover"] ul[role="listbox"] li[aria-selected="true"] > div {{
-        background-color: color-mix(in srgb, {NEW_PRIMARY_COLOR} 20%, {WHITE_BACKGROUND_COLOR}) !important;
-        color: {NEW_PRIMARY_COLOR} !important;
+        background-color: color-mix(in srgb, {PRIMARY_COLOR} 20%, {WHITE_BACKGROUND_COLOR}) !important;
+        color: {PRIMARY_COLOR} !important;
     }}
 
-    /* Estilos para Sliders (st.slider y st.select_slider) */
+    /* --- Sliders (st.slider y st.select_slider) --- */
     .stSlider [data-baseweb="slider"] > div:nth-child(1) /* Track inactivo */
     {{
         background-color: #D3D3D3 !important;
     }}
-    .stSlider [data-baseweb="slider"] > div:nth-child(2) > div, /* Barra activa de st.slider */
-    .stSlider div[data-testid="stTickBar"] > div[style*="background: rgb(0, 83, 94)"] /* Barra activa de st.select_slider (color nuevo) */
+    .stSlider [data-baseweb="slider"] > div:nth-child(2) > div, /* Barra activa st.slider */
+    .stSlider div[data-testid="stTickBar"] > div[style*="background"] /* Barra activa st.select_slider - selector más genérico */
     {{
-        background-color: {NEW_PRIMARY_COLOR} !important;
+        background-color: {PRIMARY_COLOR} !important;
     }}
     .stSlider [data-baseweb="slider"] > div:nth-child(3) > div /* Círculo/Thumb */
     {{
-        background-color: {NEW_PRIMARY_COLOR} !important;
-        border: 2px solid {NEW_PRIMARY_COLOR} !important;
+        background-color: {PRIMARY_COLOR} !important;
+        border: 2px solid {PRIMARY_COLOR} !important;
     }}
     /* Texto del valor actual del slider (ej. 'Media') */
     .stSlider > div > div[data-testid="stTextLabel"] > div,
     .stSlider > div > div[style*="text-align: center;"] > div,
     .stSlider > div > div[style*="text-align: center;"]
     {{
-        color: {NEW_PRIMARY_COLOR} !important;
+        color: {PRIMARY_COLOR} !important;
         background-color: transparent !important;
         font-weight: bold;
     }}
     /* Etiquetas de los extremos del st.select_slider (ej. 'Muy Baja', 'Muy Alta') */
     .stSlider div[data-testid="stTickBar"] > div,
-    .stSlider div[data-testid="stTickBar"] span,
-    .stSlider div[role="listbox"] div[role="option"] > div /* Opciones de st.select_slider */
+    .stSlider div[data-testid="stTickBar"] span
     {{
         background-color: transparent !important;
-        color: {DEFAULT_TEXT_COLOR_INPUT_LABELS} !important;
-        padding: 0px !important; /* Reducir padding para evitar que se vea como fondo */
+        color: {TEXT_COLOR_LABELS} !important;
+        padding: 0px !important;
         border-radius: 0px !important;
         font-weight: normal !important;
     }}
 
-    /* Radio Buttons */
+    /* --- Radio Buttons --- */
     .stRadio>div {{
         background-color: {WHITE_BACKGROUND_COLOR} !important;
-        border: 1px solid {BORDER_COLOR} !important;
+        border: 1px solid {BORDER_COLOR_STANDARD} !important;
+        border-radius: 6px;
     }}
     .stRadio label span {{
-        color: {DEFAULT_TEXT_COLOR_INPUT_LABELS} !important;
+        color: {TEXT_COLOR_LABELS} !important;
     }}
     .stRadio input[type="radio"]:checked + div {{
-        background-color: color-mix(in srgb, {NEW_PRIMARY_COLOR} 15%, {WHITE_BACKGROUND_COLOR}) !important;
-        border-color: {NEW_PRIMARY_COLOR} !important;
-        color: color-mix(in srgb, {NEW_PRIMARY_COLOR} 80%, black) !important;
+        background-color: color-mix(in srgb, {PRIMARY_COLOR} 15%, {WHITE_BACKGROUND_COLOR}) !important;
+        border-color: {PRIMARY_COLOR} !important;
+        color: {PRIMARY_COLOR} !important;
     }}
 
-    /* Etiquetas de todos los inputs */
+    /* --- Etiquetas de todos los inputs --- */
     .stSelectbox label, .stSlider label, .stMultiSelect label, .stRadio label, .stTextInput label {{
-        color: {DEFAULT_TEXT_COLOR_INPUT_LABELS} !important;
+        color: {TEXT_COLOR_LABELS} !important;
         font-weight: 500;
-        font-size: 0.9rem;
-        margin-bottom: 0.3rem;
     }}
 
-    /* Chips/Tags de st.multiselect */
+    /* --- Chips/Tags de st.multiselect --- */
     .stMultiSelect span[data-baseweb="tag"],
     .stMultiSelect span[data-baseweb="tag"] span {{
-        background-color: {NEW_PRIMARY_COLOR} !important;
-        color: white !important;
+        background-color: {PRIMARY_COLOR} !important;
+        color: {WHITE_BACKGROUND_COLOR} !important;
+        border-radius: 0.25rem;
     }}
     .stMultiSelect span[data-baseweb="tag"] svg {{
-        fill: white !important;
+        fill: {WHITE_BACKGROUND_COLOR} !important;
     }}
 
-    /* --- DataFrames y Gráficos --- */
+    /* --- DataFrames (Tablas) --- */
     .stDataFrame,
     .stDataFrame table,
     .stDataFrame th,
-    .stDataFrame td {{
+    .stDataFrame td,
+    .stDataFrame div[data-testid="stTableOverflow"] /* Contenedor de la tabla */
+    {{
         background-color: {WHITE_BACKGROUND_COLOR} !important;
-        color: {TEXT_COLOR_ON_LIGHT_BG} !important;
-        border-color: #e0e0e0 !important; /* Borde más claro para tablas */
+        color: {TEXT_COLOR_DARK} !important;
+        border-color: #e0e0e0 !important;
     }}
     .stDataFrame thead th {{
-        background-color: #f8f9fa !important; /* Un fondo ligeramente diferente para encabezados de tabla */
+        background-color: #f8f9fa !important;
+        color: {TEXT_COLOR_DARK} !important;
     }}
-    .stPlotlyChart {{
+
+    /* --- Gráficos Matplotlib/Seaborn (Asegurar fondo blanco si st.pyplot lo hereda) --- */
+    .stPlotlyChart, div[data-testid="stImage"] img /* Para st.pyplot */
+    {{
         background-color: {WHITE_BACKGROUND_COLOR} !important;
+        border-radius: 8px;
     }}
 
     /* --- Footer --- */
-    footer {{
-        visibility: hidden;
-    }}
-    .footer-custom {{
-        text-align: center;
-        padding: 1.5rem 0;
-        margin-top: 3rem;
-        font-size: 0.9rem;
-        color: #6c757d;
-        border-top: 1px solid #e0e0e0;
-    }}
+    footer {{ visibility: hidden; }}
+    .footer-custom {{ text-align: center; padding: 1.5rem 0; margin-top: 3rem; font-size: 0.9rem; color: #6c757d; border-top: 1px solid #e0e0e0; }}
 
 </style>
 """, unsafe_allow_html=True)
 
 # --- Datos (Actualizados y Adaptados) ---
-# (El resto del código Python permanece igual)
-# ... (código de datos, lógica de la app, etc.) ...
+benchmark_data = {
+    'Métrica': [
+        'Tasa Activación (SAR) - Software Contable Latam',
+        'Tasa Adopción Funcionalidad - Software Contable Latam',
+        'Tasa Adopción - Facturación Electrónica (Regulatorio Fuerte)',
+        'Tasa Adopción - Reportes Fiscales (Regulatorio Fuerte)',
+        'Tasa Adopción - Nómina Electrónica (Regulatorio Variable)',
+        'Tasa Adopción - Contabilidad Core',
+        'Tasa Adopción - Inventarios',
+        'Tasa Adopción - Ventas en POS',
+        'Tasa Retención (Mes 1) - Software Contable Latam',
+        'Tasa Rotación Anual (Churn) - Software Contable Latam',
+        'Ratio LTV:CAC - Software Contable Latam'
+    ],
+    'Valor Benchmark (Promedio/Rango)': [
+        '28-35%', '26-32%', '45-60%', '35-45%', '30-50%',
+        '25-35%', '20-30%', '20-28%', '50-55%', '4-6%', '3.5:1'
+    ],
+    'Fuente': ['Estimación Industria Latam'] * 11,
+    'Notas': [
+        'Rango saludable para software contable en Latam',
+        'Promedio general, varía por tipo de funcionalidad y país',
+        'Mayor por requisitos regulatorios fuertes (ej. MX, CO)',
+        'Alta por necesidad de cumplimiento fiscal (ej. MX, CO)',
+        'Depende de obligatoriedad en cada país',
+        'Funcionalidad central, adopción más estable',
+        'Relevante para ciertos segmentos (retail, etc.)',
+        'Adopción puede ser más lenta por hardware/configuración',
+        'Retención inicial clave',
+        'Churn anual esperado',
+        'Relación valor cliente vs costo adquisición'
+    ],
+    'Región': ['Latam'] * 11,
+    'Año': ['2024'] * 11
+}
+
+historical_data = {
+    'Funcionalidad': [
+        'Facturación Electrónica México', 'Facturación Electrónica Colombia', 
+        'Reportes Fiscales México', 'Reportes Fiscales Colombia', 'Nómina Electrónica Colombia',
+        'Inventarios México', 'Contabilidad General Colombia', 'Ventas en POS México', 'Ventas en POS Costa Rica'
+    ],
+    'Tipo': [
+        'Facturación electrónica', 'Facturación electrónica', 'Reportes fiscales', 'Reportes fiscales', 'Nómina electrónica',
+        'Inventarios', 'Contabilidad', 'Ventas en POS', 'Ventas en POS'
+    ],
+    'Complejidad': ['Media', 'Media', 'Media', 'Media', 'Alta', 'Media', 'Baja', 'Media', 'Media'],
+    'País': [
+        'México', 'Colombia', 'México', 'Colombia', 'Colombia', 
+        'México', 'Colombia', 'México', 'Costa Rica'
+    ],
+    'Tasa Adopción 1 Mes': ['25%', '22%', '20%', '18%', '15%', '12%', '18%', '10%', '8%'],
+    'Tasa Adopción 3 Meses': ['55%', '48%', '40%', '38%', '35%', '28%', '30%', '25%', '20%'],
+    'Tasa Adopción 6 Meses': ['78%', '72%', '60%', '58%', '55%', '45%', '50%', '40%', '35%'],
+    'Requisito Regulatorio': ['Sí', 'Sí', 'Sí', 'Sí', 'Sí', 'No', 'No', 'No', 'No'],
+    'Año Lanzamiento': ['2022', '2022', '2022', '2023', '2023', '2023', '2022', '2023', '2024']
+}
+
+# Creación de DataFrames con manejo de errores para evitar NameError
+try:
+    benchmarks_df = pd.DataFrame(benchmark_data)
+except Exception as e:
+    st.error(f"Error al crear DataFrame de benchmarks: {e}")
+    benchmarks_df = pd.DataFrame() # Fallback a DataFrame vacío
+
+try:
+    historical_df = pd.DataFrame(historical_data)
+except Exception as e:
+    st.error(f"Error al crear DataFrame histórico: {e}")
+    historical_df = pd.DataFrame() # Fallback a DataFrame vacío
 
 # --- Título y Descripción ---
 st.title("🚀 Herramienta de Estimación de Adopción SaaS")
@@ -257,11 +333,11 @@ plt.style.use("seaborn-v0_8-whitegrid")
 plt.rcParams["font.family"] = "sans-serif"
 plt.rcParams["axes.facecolor"] = WHITE_BACKGROUND_COLOR
 plt.rcParams["figure.facecolor"] = WHITE_BACKGROUND_COLOR
-plt.rcParams["text.color"] = TEXT_COLOR_ON_LIGHT_BG
-plt.rcParams["axes.labelcolor"] = SECONDARY_TEXT_COLOR
-plt.rcParams["xtick.color"] = SECONDARY_TEXT_COLOR
-plt.rcParams["ytick.color"] = SECONDARY_TEXT_COLOR
-plt.rcParams["axes.edgecolor"] = BORDER_COLOR
+plt.rcParams["text.color"] = TEXT_COLOR_DARK
+plt.rcParams["axes.labelcolor"] = TEXT_COLOR_MEDIUM
+plt.rcParams["xtick.color"] = TEXT_COLOR_MEDIUM
+plt.rcParams["ytick.color"] = TEXT_COLOR_MEDIUM
+plt.rcParams["axes.edgecolor"] = BORDER_COLOR_STANDARD
 
 # --- Pestaña Calculadora Predictiva ---
 with tab2:
@@ -312,7 +388,7 @@ with tab2:
                 value="Medio", help="Nivel de inversión en documentación, tutoriales y soporte.")
             integracion_compleja = st.radio("¿Requiere Integración Compleja por parte del Usuario?", ("No", "Sí"), horizontal=True, help="¿Necesita el usuario configurar conexiones complejas con otros sistemas?")
 
-    # --- Lógica de Predicción (Adaptada a nuevos países y funcionalidades) ---
+    # --- Lógica de Predicción ---
     if tipo_funcionalidad == "Facturación electrónica": base_score = 45
     elif tipo_funcionalidad == "Reportes fiscales": base_score = 40
     elif tipo_funcionalidad == "Nómina electrónica": base_score = 38
@@ -388,7 +464,7 @@ with tab2:
         fig, ax = plt.subplots(figsize=(8, 4))
         scenarios = ["Pesimista", "Base", "Optimista"]
         values = [pesimista_medio, base_medio, optimista_medio]
-        bar_colors = ["#fd7e14", NEW_PRIMARY_COLOR, "#28a745"]
+        bar_colors = ["#fd7e14", PRIMARY_COLOR, "#28a745"]
         bars = ax.bar(scenarios, values, color=bar_colors, width=0.5)
         for bar in bars:
             height = bar.get_height()
@@ -449,41 +525,47 @@ with tab1:
     </div>
     """, unsafe_allow_html=True)
     
-    st.dataframe(benchmarks_df, use_container_width=True, hide_index=True)
+    if not benchmarks_df.empty:
+        st.dataframe(benchmarks_df, use_container_width=True, hide_index=True)
+    else:
+        st.warning("No se pudieron cargar los datos de benchmarks.")
     
     st.subheader("Evolución Histórica de Adopción (Ejemplos)")
     st.markdown("Tasas de adopción de funcionalidades lanzadas previamente (datos de ejemplo para ilustración).")
     
-    line_chart_df = historical_df.copy()
-    for col in ["Tasa Adopción 1 Mes", "Tasa Adopción 3 Meses", "Tasa Adopción 6 Meses"]:
-        line_chart_df[col] = line_chart_df[col].str.rstrip("%".encode("utf-8").decode("utf-8")).astype("float") / 100.0
-    
-    line_chart_df_melted = line_chart_df.melt(
-        id_vars=["Funcionalidad", "País"],
-        value_vars=["Tasa Adopción 1 Mes", "Tasa Adopción 3 Meses", "Tasa Adopción 6 Meses"],
-        var_name="Meses", 
-        value_name="Tasa de Adopción"
-    )
-    line_chart_df_melted["Meses"] = line_chart_df_melted["Meses"].map({
-        "Tasa Adopción 1 Mes": 1,
-        "Tasa Adopción 3 Meses": 3,
-        "Tasa Adopción 6 Meses": 6
-    })
-    line_chart_df_melted["Etiqueta"] = line_chart_df_melted["Funcionalidad"] + " (" + line_chart_df_melted["País"] + ")"
+    if not historical_df.empty:
+        line_chart_df = historical_df.copy()
+        for col in ["Tasa Adopción 1 Mes", "Tasa Adopción 3 Meses", "Tasa Adopción 6 Meses"]:
+            line_chart_df[col] = line_chart_df[col].str.rstrip("%".encode("utf-8").decode("utf-8")).astype("float") / 100.0
+        
+        line_chart_df_melted = line_chart_df.melt(
+            id_vars=["Funcionalidad", "País"],
+            value_vars=["Tasa Adopción 1 Mes", "Tasa Adopción 3 Meses", "Tasa Adopción 6 Meses"],
+            var_name="Meses", 
+            value_name="Tasa de Adopción"
+        )
+        line_chart_df_melted["Meses"] = line_chart_df_melted["Meses"].map({
+            "Tasa Adopción 1 Mes": 1,
+            "Tasa Adopción 3 Meses": 3,
+            "Tasa Adopción 6 Meses": 6
+        })
+        line_chart_df_melted["Etiqueta"] = line_chart_df_melted["Funcionalidad"] + " (" + line_chart_df_melted["País"] + ")"
 
-    if not line_chart_df_melted.empty:
-        fig_line, ax_line = plt.subplots(figsize=(12, 6))
-        sns.lineplot(data=line_chart_df_melted, x="Meses", y="Tasa de Adopción", hue="Etiqueta", marker="o", ax=ax_line, palette="viridis")
-        ax_line.set_title("Curva de Adopción Histórica por Funcionalidad y País", fontsize=15)
-        ax_line.set_xlabel("Meses desde Lanzamiento", fontsize=12)
-        ax_line.set_ylabel("Tasa de Adopción Acumulada", fontsize=12)
-        ax_line.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y:.0%}"))
-        ax_line.legend(title="Funcionalidad (País)", bbox_to_anchor=(1.05, 1), loc="upper left")
-        ax_line.grid(True, linestyle="--", alpha=0.7)
-        plt.tight_layout(rect=[0, 0, 0.85, 1])
-        st.pyplot(fig_line)
+        if not line_chart_df_melted.empty:
+            fig_line, ax_line = plt.subplots(figsize=(12, 6))
+            sns.lineplot(data=line_chart_df_melted, x="Meses", y="Tasa de Adopción", hue="Etiqueta", marker="o", ax=ax_line, palette="viridis")
+            ax_line.set_title("Curva de Adopción Histórica por Funcionalidad y País", fontsize=15)
+            ax_line.set_xlabel("Meses desde Lanzamiento", fontsize=12)
+            ax_line.set_ylabel("Tasa de Adopción Acumulada", fontsize=12)
+            ax_line.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y:.0%}"))
+            ax_line.legend(title="Funcionalidad (País)", bbox_to_anchor=(1.05, 1), loc="upper left")
+            ax_line.grid(True, linestyle="--", alpha=0.7)
+            plt.tight_layout(rect=[0, 0, 0.85, 1])
+            st.pyplot(fig_line)
+        else:
+            st.warning("No hay datos históricos procesados disponibles para graficar.")
     else:
-        st.warning("No hay datos históricos disponibles para graficar.")
+        st.warning("No se pudieron cargar los datos históricos.")
 
 # --- Pestaña Generador de Informes (Placeholder) ---
 with tab3:
@@ -493,7 +575,7 @@ with tab3:
 # --- Footer Personalizado ---
 st.markdown("""
 <div class="footer-custom">
-    Hecho con ❤️ por un IA | Herramienta de Estimación de Adopción v9
+    Hecho con ❤️ por un IA | Herramienta de Estimación de Adopción v10
 </div>
 """, unsafe_allow_html=True)
 
