@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
-import time # Import time for spinner
+import time
 
 # --- Configuración de la Página ---
 st.set_page_config(
@@ -15,13 +15,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- Definición de Colores y Estilos (v10) ---
-PRIMARY_COLOR = "#00535E" # Color principal solicitado por el usuario
+# --- Definición de Colores y Estilos ---
+PRIMARY_COLOR = "#00535E"
 LIGHT_BACKGROUND_COLOR = "#f0f2f5"
 WHITE_BACKGROUND_COLOR = "#FFFFFF"
-TEXT_COLOR_DARK = "#1a1a1a" # Para títulos y texto principal
-TEXT_COLOR_MEDIUM = "#4f4f4f" # Para texto secundario
-TEXT_COLOR_LABELS = "#495057" # Para etiquetas de inputs
+TEXT_COLOR_DARK = "#1a1a1a"
+TEXT_COLOR_MEDIUM = "#4f4f4f"
+TEXT_COLOR_LABELS = "#495057"
 BORDER_COLOR_STANDARD = "#ced4da"
 
 st.markdown(f"""
@@ -46,7 +46,7 @@ st.markdown(f"""
     section[data-testid="stHeader"] .stToolbar,
     section[data-testid="stHeader"] .stToolbar button svg {{
         color: {TEXT_COLOR_DARK} !important;
-        fill: {TEXT_COLOR_DARK} !important; /* Para iconos SVG en el header */
+        fill: {TEXT_COLOR_DARK} !important;
     }}
 
     /* --- Textos Generales y Títulos --- */
@@ -114,7 +114,7 @@ st.markdown(f"""
         margin-top: 0;
     }}
 
-    /* --- Entradas (Inputs): TextInput, Selectbox, MultiSelect --- */
+    /* --- Entradas (Inputs) --- */
     .stTextInput>div>div>input,
     .stSelectbox>div>div,
     .stMultiSelect>div>div[data-baseweb="select"] {{
@@ -126,7 +126,6 @@ st.markdown(f"""
     .stTextInput input::placeholder {{
         color: #888 !important;
     }}
-    /* Dropdown list items */
     div[data-baseweb="popover"] ul[role="listbox"] li[role="option"] > div {{
         background-color: {WHITE_BACKGROUND_COLOR} !important;
         color: {TEXT_COLOR_DARK} !important;
@@ -136,39 +135,33 @@ st.markdown(f"""
         color: {PRIMARY_COLOR} !important;
     }}
 
-    /* --- Sliders (st.slider y st.select_slider) --- */
-    .stSlider [data-baseweb="slider"] > div:nth-child(1) /* Track inactivo */
-    {{
+    /* --- Sliders (Corregidos) --- */
+    .stSlider [data-baseweb="slider"] > div:nth-child(1) {{
         background-color: #D3D3D3 !important;
     }}
-    .stSlider [data-baseweb="slider"] > div:nth-child(2) > div, /* Barra activa st.slider */
-    .stSlider div[data-testid="stTickBar"] > div[style*="background"] /* Barra activa st.select_slider - selector más genérico */
-    {{
+    .stSlider [data-baseweb="slider"] > div:nth-child(2) > div,
+    .stSlider div[data-testid="stTickBar"] > div[style*="background"] {{
         background-color: {PRIMARY_COLOR} !important;
     }}
-    .stSlider [data-baseweb="slider"] > div:nth-child(3) > div /* Círculo/Thumb */
-    {{
+    .stSlider [data-baseweb="slider"] > div:nth-child(3) > div {{
         background-color: {PRIMARY_COLOR} !important;
         border: 2px solid {PRIMARY_COLOR} !important;
     }}
-    /* Texto del valor actual del slider (ej. 'Media') */
     .stSlider > div > div[data-testid="stTextLabel"] > div,
     .stSlider > div > div[style*="text-align: center;"] > div,
-    .stSlider > div > div[style*="text-align: center;"]
-    {{
+    .stSlider > div > div[style*="text-align: center;"] {{
         color: {PRIMARY_COLOR} !important;
         background-color: transparent !important;
         font-weight: bold;
     }}
-    /* Etiquetas de los extremos del st.select_slider (ej. 'Muy Baja', 'Muy Alta') */
     .stSlider div[data-testid="stTickBar"] > div,
-    .stSlider div[data-testid="stTickBar"] span
-    {{
-        background-color: transparent !important;
+    .stSlider div[data-testid="stTickBar"] span {{
+        background-color: {WHITE_BACKGROUND_COLOR} !important;
         color: {TEXT_COLOR_LABELS} !important;
-        padding: 0px !important;
-        border-radius: 0px !important;
+        padding: 2px 8px !important;
+        border-radius: 4px !important;
         font-weight: normal !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }}
 
     /* --- Radio Buttons --- */
@@ -186,13 +179,13 @@ st.markdown(f"""
         color: {PRIMARY_COLOR} !important;
     }}
 
-    /* --- Etiquetas de todos los inputs --- */
+    /* --- Etiquetas de inputs --- */
     .stSelectbox label, .stSlider label, .stMultiSelect label, .stRadio label, .stTextInput label {{
         color: {TEXT_COLOR_LABELS} !important;
         font-weight: 500;
     }}
 
-    /* --- Chips/Tags de st.multiselect --- */
+    /* --- Chips/Tags --- */
     .stMultiSelect span[data-baseweb="tag"],
     .stMultiSelect span[data-baseweb="tag"] span {{
         background-color: {PRIMARY_COLOR} !important;
@@ -208,8 +201,7 @@ st.markdown(f"""
     .stDataFrame table,
     .stDataFrame th,
     .stDataFrame td,
-    .stDataFrame div[data-testid="stTableOverflow"] /* Contenedor de la tabla */
-    {{
+    .stDataFrame div[data-testid="stTableOverflow"] {{
         background-color: {WHITE_BACKGROUND_COLOR} !important;
         color: {TEXT_COLOR_DARK} !important;
         border-color: #e0e0e0 !important;
@@ -219,21 +211,26 @@ st.markdown(f"""
         color: {TEXT_COLOR_DARK} !important;
     }}
 
-    /* --- Gráficos Matplotlib/Seaborn (Asegurar fondo blanco si st.pyplot lo hereda) --- */
-    .stPlotlyChart, div[data-testid="stImage"] img /* Para st.pyplot */
-    {{
+    /* --- Gráficos --- */
+    .stPlotlyChart, div[data-testid="stImage"] img {{
         background-color: {WHITE_BACKGROUND_COLOR} !important;
         border-radius: 8px;
     }}
 
     /* --- Footer --- */
     footer {{ visibility: hidden; }}
-    .footer-custom {{ text-align: center; padding: 1.5rem 0; margin-top: 3rem; font-size: 0.9rem; color: #6c757d; border-top: 1px solid #e0e0e0; }}
-
+    .footer-custom {{
+        text-align: center;
+        padding: 1.5rem 0;
+        margin-top: 3rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+        border-top: 1px solid #e0e0e0;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
-# --- Datos (Actualizados y Adaptados) ---
+# --- Datos ---
 benchmark_data = {
     'Métrica': [
         'Tasa Activación (SAR) - Software Contable Latam',
@@ -292,31 +289,23 @@ historical_data = {
     'Año Lanzamiento': ['2022', '2022', '2022', '2023', '2023', '2023', '2022', '2023', '2024']
 }
 
-# Creación de DataFrames con manejo de errores para evitar NameError
+# Creación de DataFrames
 try:
     benchmarks_df = pd.DataFrame(benchmark_data)
 except Exception as e:
     st.error(f"Error al crear DataFrame de benchmarks: {e}")
-    benchmarks_df = pd.DataFrame() # Fallback a DataFrame vacío
+    benchmarks_df = pd.DataFrame()
 
 try:
     historical_df = pd.DataFrame(historical_data)
 except Exception as e:
     st.error(f"Error al crear DataFrame histórico: {e}")
-    historical_df = pd.DataFrame() # Fallback a DataFrame vacío
-
-# --- Título y Descripción ---
-st.title("🚀 Herramienta de Estimación de Adopción SaaS")
-st.markdown("**Plataforma interactiva para definir objetivos de adopción en software contable B2B para Latam.**")
-st.markdown("--- ")
-
-# --- Componentes de la Herramienta (Pestañas) ---
-tab2, tab1, tab3 = st.tabs(["🧮 Calculadora Predictiva", "🧭 Explorador de Benchmarks", "📄 Generador de Informes"])
+    historical_df = pd.DataFrame()
 
 # --- Funciones Auxiliares ---
 def extract_avg(range_str):
     try:
-        parts = str(range_str).replace("%".encode("utf-8").decode("utf-8"), "").replace("$".encode("utf-8").decode("utf-8"), "").split("-")
+        parts = str(range_str).replace("%", "").replace("$", "").split("-")
         if len(parts) == 2:
             return (float(parts[0]) + float(parts[1])) / 2
         elif len(parts) == 1 and parts[0] != "":
@@ -328,7 +317,7 @@ def extract_avg(range_str):
     except:
         return np.nan
 
-# Configuración de tema para Matplotlib/Seaborn para gráficos
+# Configuración de gráficos
 plt.style.use("seaborn-v0_8-whitegrid")
 plt.rcParams["font.family"] = "sans-serif"
 plt.rcParams["axes.facecolor"] = WHITE_BACKGROUND_COLOR
@@ -338,6 +327,67 @@ plt.rcParams["axes.labelcolor"] = TEXT_COLOR_MEDIUM
 plt.rcParams["xtick.color"] = TEXT_COLOR_MEDIUM
 plt.rcParams["ytick.color"] = TEXT_COLOR_MEDIUM
 plt.rcParams["axes.edgecolor"] = BORDER_COLOR_STANDARD
+
+# --- Interfaz Principal ---
+st.title("🚀 Herramienta de Estimación de Adopción SaaS")
+st.markdown("**Plataforma interactiva para definir objetivos de adopción en software contable B2B para Latam.**")
+st.markdown("---")
+
+# --- Componentes de la Herramienta (Pestañas) ---
+tab1, tab2, tab3 = st.tabs(["🧭 Explorador de Benchmarks", "🧮 Calculadora Predictiva", "📄 Generador de Informes"])
+
+# --- Pestaña Explorador de Benchmarks ---
+with tab1:
+    st.header("🧭 Explorador de Benchmarks de Adopción SaaS B2B (Latam)")
+    st.markdown("""
+    <div class="info-box">
+    <h4 style="margin-top:0">📊 Datos de Referencia</h4>
+    Consulta benchmarks estimados para la industria de software contable en Latinoamérica. 
+    Estos valores son promedios y pueden variar significativamente.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if not benchmarks_df.empty:
+        st.dataframe(benchmarks_df, use_container_width=True, hide_index=True)
+    else:
+        st.warning("No se pudieron cargar los datos de benchmarks.")
+    
+    st.subheader("Evolución Histórica de Adopción (Ejemplos)")
+    st.markdown("Tasas de adopción de funcionalidades lanzadas previamente (datos de ejemplo para ilustración).")
+    
+    if not historical_df.empty:
+        line_chart_df = historical_df.copy()
+        for col in ["Tasa Adopción 1 Mes", "Tasa Adopción 3 Meses", "Tasa Adopción 6 Meses"]:
+            line_chart_df[col] = line_chart_df[col].str.rstrip("%").astype("float") / 100.0
+        
+        line_chart_df_melted = line_chart_df.melt(
+            id_vars=["Funcionalidad", "País"],
+            value_vars=["Tasa Adopción 1 Mes", "Tasa Adopción 3 Meses", "Tasa Adopción 6 Meses"],
+            var_name="Meses", 
+            value_name="Tasa de Adopción"
+        )
+        line_chart_df_melted["Meses"] = line_chart_df_melted["Meses"].map({
+            "Tasa Adopción 1 Mes": 1,
+            "Tasa Adopción 3 Meses": 3,
+            "Tasa Adopción 6 Meses": 6
+        })
+        line_chart_df_melted["Etiqueta"] = line_chart_df_melted["Funcionalidad"] + " (" + line_chart_df_melted["País"] + ")"
+
+        if not line_chart_df_melted.empty:
+            fig_line, ax_line = plt.subplots(figsize=(12, 6))
+            sns.lineplot(data=line_chart_df_melted, x="Meses", y="Tasa de Adopción", hue="Etiqueta", marker="o", ax=ax_line, palette="viridis")
+            ax_line.set_title("Curva de Adopción Histórica por Funcionalidad y País", fontsize=15)
+            ax_line.set_xlabel("Meses desde Lanzamiento", fontsize=12)
+            ax_line.set_ylabel("Tasa de Adopción Acumulada", fontsize=12)
+            ax_line.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y:.0%}"))
+            ax_line.legend(title="Funcionalidad (País)", bbox_to_anchor=(1.05, 1), loc="upper left")
+            ax_line.grid(True, linestyle="--", alpha=0.7)
+            plt.tight_layout(rect=[0, 0, 0.85, 1])
+            st.pyplot(fig_line)
+        else:
+            st.warning("No hay datos históricos procesados disponibles para graficar.")
+    else:
+        st.warning("No se pudieron cargar los datos históricos.")
 
 # --- Pestaña Calculadora Predictiva ---
 with tab2:
@@ -443,7 +493,7 @@ with tab2:
             <h3>🎯 Tasa Objetivo (Base)</h3>
             <h2>{rango_objetivo_base}</h2>
         </div>
-        """, unsafe_allow_html=True, help="Estimación central de la tasa de adopción esperada a los 3 meses.")
+        """, unsafe_allow_html=True)
     with col_res2:
         st.markdown(f"""
         <div class="success-box">
@@ -477,7 +527,7 @@ with tab2:
         plt.tight_layout()
         st.pyplot(fig)
     
-    st.markdown("--- ")
+    st.markdown("---")
     st.subheader("3. Análisis y Recomendaciones")
     with st.container():
         st.markdown("#### Factores Clave de Influencia")
@@ -514,68 +564,14 @@ with tab2:
         for rec in recomendaciones:
             st.markdown(f"- {rec}")
 
-# --- Pestaña Explorador de Benchmarks ---
-with tab1:
-    st.header("🧭 Explorador de Benchmarks de Adopción SaaS B2B (Latam)")
-    st.markdown("""
-    <div class="info-box">
-    <h4 style="margin-top:0">📊 Datos de Referencia</h4>
-    Consulta benchmarks estimados para la industria de software contable en Latinoamérica. 
-    Estos valores son promedios y pueden variar significativamente.
-    </div>
-    """, unsafe_allow_html=True)
-    
-    if not benchmarks_df.empty:
-        st.dataframe(benchmarks_df, use_container_width=True, hide_index=True)
-    else:
-        st.warning("No se pudieron cargar los datos de benchmarks.")
-    
-    st.subheader("Evolución Histórica de Adopción (Ejemplos)")
-    st.markdown("Tasas de adopción de funcionalidades lanzadas previamente (datos de ejemplo para ilustración).")
-    
-    if not historical_df.empty:
-        line_chart_df = historical_df.copy()
-        for col in ["Tasa Adopción 1 Mes", "Tasa Adopción 3 Meses", "Tasa Adopción 6 Meses"]:
-            line_chart_df[col] = line_chart_df[col].str.rstrip("%".encode("utf-8").decode("utf-8")).astype("float") / 100.0
-        
-        line_chart_df_melted = line_chart_df.melt(
-            id_vars=["Funcionalidad", "País"],
-            value_vars=["Tasa Adopción 1 Mes", "Tasa Adopción 3 Meses", "Tasa Adopción 6 Meses"],
-            var_name="Meses", 
-            value_name="Tasa de Adopción"
-        )
-        line_chart_df_melted["Meses"] = line_chart_df_melted["Meses"].map({
-            "Tasa Adopción 1 Mes": 1,
-            "Tasa Adopción 3 Meses": 3,
-            "Tasa Adopción 6 Meses": 6
-        })
-        line_chart_df_melted["Etiqueta"] = line_chart_df_melted["Funcionalidad"] + " (" + line_chart_df_melted["País"] + ")"
-
-        if not line_chart_df_melted.empty:
-            fig_line, ax_line = plt.subplots(figsize=(12, 6))
-            sns.lineplot(data=line_chart_df_melted, x="Meses", y="Tasa de Adopción", hue="Etiqueta", marker="o", ax=ax_line, palette="viridis")
-            ax_line.set_title("Curva de Adopción Histórica por Funcionalidad y País", fontsize=15)
-            ax_line.set_xlabel("Meses desde Lanzamiento", fontsize=12)
-            ax_line.set_ylabel("Tasa de Adopción Acumulada", fontsize=12)
-            ax_line.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y:.0%}"))
-            ax_line.legend(title="Funcionalidad (País)", bbox_to_anchor=(1.05, 1), loc="upper left")
-            ax_line.grid(True, linestyle="--", alpha=0.7)
-            plt.tight_layout(rect=[0, 0, 0.85, 1])
-            st.pyplot(fig_line)
-        else:
-            st.warning("No hay datos históricos procesados disponibles para graficar.")
-    else:
-        st.warning("No se pudieron cargar los datos históricos.")
-
-# --- Pestaña Generador de Informes (Placeholder) ---
+# --- Pestaña Generador de Informes ---
 with tab3:
     st.header("📄 Generador de Informes")
     st.info("Esta funcionalidad estará disponible próximamente. Permitirá generar un resumen de las estimaciones y benchmarks.")
 
-# --- Footer Personalizado ---
+# --- Footer ---
 st.markdown("""
 <div class="footer-custom">
     Hecho con ❤️ por un IA | Herramienta de Estimación de Adopción v10
 </div>
 """, unsafe_allow_html=True)
-
